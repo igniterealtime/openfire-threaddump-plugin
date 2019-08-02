@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>plugins</artifactId>
+        <groupId>org.igniterealtime.openfire</groupId>
+        <version>4.3.0</version>
+    </parent>
+
+    <groupId>org.igniterealtime.openfire.plugin.threaddump</groupId>
+    <artifactId>threaddump</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>Threaddump Plugin</name>
+    <description>A plugin that can be used to generate diagnostics.</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <!-- Compiles the Openfire Admin Console JSP pages. -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+                <!-- Override the JSP compiler version to retain compatibility with Openfire prior to 4.3.0 -->
+                <version>9.2.14.v20151106</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.igniterealtime.openfire</groupId>
+                        <artifactId>xmppserver</artifactId>
+                        <version>${openfire.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <!-- Where we obtain dependencies (such as the parent project). -->
+        <repository>
+            <id>igniterealtime</id>
+            <name>Ignite Realtime Repository</name>
+            <url>https://igniterealtime.org/archiva/repository/maven/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <!-- Typically used to retrieve Maven plugins used by this project from. This
+             apparently is also used to obtain the dependencies _used by_ plugins
+             (eg: openfire-plugin-assembly-descriptor) -->
+        <pluginRepository>
+            <id>igniterealtime</id>
+            <name>Ignite Realtime Repository</name>
+            <url>https://igniterealtime.org/archiva/repository/maven/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

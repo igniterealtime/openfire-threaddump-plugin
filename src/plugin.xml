@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+    <class>org.igniterealtime.openfire.plugin.threaddump.ThreadDumpPlugin</class>
+    <name>Thread Dump</name>
+    <description>${project.description}</description>
+    <author>Ignite Realtime</author>
+    <version>${project.version}</version>
+    <date>07/29/2019</date>
+
+    <adminconsole>
+        <tab id="tab-server">
+            <sidebar id="sidebar-server-manager">
+                <item id="threaddump" name="${admin.sidebar.threaddump.name}" description="${admin.sidebar.threaddump.description}" url="threaddump.jsp"/>
+            </sidebar>
+        </tab>
+    </adminconsole>
+
+</plugin>
