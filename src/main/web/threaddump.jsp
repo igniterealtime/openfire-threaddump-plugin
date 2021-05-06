@@ -19,6 +19,7 @@
 <%@ page import="org.igniterealtime.openfire.plugin.threaddump.ThreadDumpPlugin" %>
 <%@ page import="org.igniterealtime.openfire.plugin.threaddump.evaluator.CoreThreadPoolsEvaluator" %>
 <%@ page import="org.igniterealtime.openfire.plugin.threaddump.evaluator.DeadlockEvaluator" %>
+<%@ page import="org.igniterealtime.openfire.plugin.threaddump.evaluator.TaskEngineEvaluator" %>
 <%@ page import="org.igniterealtime.openfire.plugin.threaddump.evaluator.Evaluator" %>
 <%@ page import="org.igniterealtime.openfire.plugin.threaddump.formatter.DefaultThreadDumpFormatter" %>
 <%@ page import="org.jivesoftware.openfire.XMPPServer" %>
@@ -63,8 +64,15 @@
             final long poolEvaluatorIntervalMS = Long.parseLong( request.getParameter( "poolEvaluatorIntervalMS" ) );
             final int poolEvaluatorBusyPercentage = Integer.parseInt( request.getParameter( "poolEvaluatorBusyPercentage" ) );
             final int poolEvaluatorSuccessiveHits = Integer.parseInt( request.getParameter( "poolEvaluatorSuccessiveHits" ) );
+
             final boolean deadlockEvaluatorEnabled = request.getParameter( "deadlockEvaluatorEnabled" ) != null && ( request.getParameter( "deadlockEvaluatorEnabled" ).equals( "true" ) || request.getParameter( "deadlockEvaluatorEnabled" ).equals( "on" ) );
             final long deadlockEvaluatorIntervalMS = Long.parseLong( request.getParameter( "deadlockEvaluatorIntervalMS" ) );
+
+            final boolean taskEngineEvaluatorEnabled = request.getParameter( "taskEngineEvaluatorEnabled" ) != null && ( request.getParameter( "taskEngineEvaluatorEnabled" ).equals( "true" ) || request.getParameter( "taskEngineEvaluatorEnabled" ).equals( "on" ) );
+            final int taskEngineEvaluatorMaxThreads = Integer.parseInt( request.getParameter( "taskEngineEvaluatorMaxThreads" ) );
+            final int taskEngineEvaluatorMaxPoolSize = Integer.parseInt( request.getParameter( "taskEngineEvaluatorMaxPoolSize" ) );
+            final long taskEngineEvaluatorIntervalMS = Long.parseLong( request.getParameter( "taskEngineEvaluatorIntervalMS" ) );
+            final int taskEngineEvaluatorSuccessiveHits = Integer.parseInt( request.getParameter( "taskEngineEvaluatorSuccessiveHits" ) );
 
             final Set<Class<? extends Evaluator>> enabledEvaluators = new HashSet<>();
             if ( poolEvaluatorEnabled ) {
@@ -72,6 +80,9 @@
             }
             if ( deadlockEvaluatorEnabled ) {
                 enabledEvaluators.add( DeadlockEvaluator.class );
+            }
+            if ( taskEngineEvaluatorEnabled ) {
+                enabledEvaluators.add( TaskEngineEvaluator.class );
             }
 
             // Change property values based on the parsed values.
@@ -84,9 +95,13 @@
             JiveGlobals.setProperty( "threaddump.evaluator.threadpools.busy-percentage-max", String.valueOf( poolEvaluatorBusyPercentage ) );
             JiveGlobals.setProperty( "threaddump.evaluator.threadpools.successive-hits", String.valueOf( poolEvaluatorSuccessiveHits ) );
             JiveGlobals.setProperty( "threaddump.evaluator.deadlock.interval", String.valueOf( deadlockEvaluatorIntervalMS ));
+            JiveGlobals.setProperty( "threaddump.evaluator.taskengine.max-threads", String.valueOf( taskEngineEvaluatorMaxThreads ) );
+            JiveGlobals.setProperty( "threaddump.evaluator.taskengine.max-poolsize", String.valueOf( taskEngineEvaluatorMaxPoolSize ) );
+            JiveGlobals.setProperty( "threaddump.evaluator.taskengine.interval", String.valueOf( taskEngineEvaluatorIntervalMS ) );
+            JiveGlobals.setProperty( "threaddump.evaluator.taskengine.successive-hits", String.valueOf( taskEngineEvaluatorSuccessiveHits ) );
             plugin.setTaskEnabled( enableTask );
 
-            webManager.logEvent( "Thread-dumping settings have been updated.", "task enabled: " + enableTask + "\nenabled evaluator classes: " + enabledEvaluators + "\ntask delay: " + taskDelayMS + "ms\ntask interval: " + taskIntervalMS + "ms\ntask backoff: " + taskBackoffMS + "ms\nthreadpool interval: " + poolEvaluatorIntervalMS + "ms\nthreadpool busy percentage: " + poolEvaluatorBusyPercentage + "%\nthreadpool successive hits: " + poolEvaluatorSuccessiveHits + "\ndeadlock interval: " + deadlockEvaluatorIntervalMS + "ms");
+            webManager.logEvent( "Thread-dumping settings have been updated.", "task enabled: " + enableTask + "\nenabled evaluator classes: " + enabledEvaluators + "\ntask delay: " + taskDelayMS + "ms\ntask interval: " + taskIntervalMS + "ms\ntask backoff: " + taskBackoffMS + "ms\nthreadpool interval: " + poolEvaluatorIntervalMS + "ms\nthreadpool busy percentage: " + poolEvaluatorBusyPercentage + "%\nthreadpool successive hits: " + poolEvaluatorSuccessiveHits + "\ndeadlock interval: " + deadlockEvaluatorIntervalMS + "ms\ntaskengine max threads: " + taskEngineEvaluatorMaxThreads + "\ntaskengine max pool size: " + taskEngineEvaluatorMaxPoolSize + "\ntaskengine successive hits: " + taskEngineEvaluatorSuccessiveHits + "\ntaskengine interval: " + taskEngineEvaluatorIntervalMS + "ms");
             response.sendRedirect( "threaddump.jsp?success=true" );
             return;
         }
@@ -102,10 +117,18 @@
     pageContext.setAttribute( "plugin", plugin );
     pageContext.setAttribute( "isPoolEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( CoreThreadPoolsEvaluator.class ) );
     pageContext.setAttribute( "isDeadlockEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( DeadlockEvaluator.class ) );
+    pageContext.setAttribute( "isTaskEngineEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( TaskEngineEvaluator.class ) );
+
     pageContext.setAttribute( "poolEvaluatorInterval", JiveGlobals.getLongProperty( "threaddump.evaluator.threadpools.interval", Duration.of( 5, ChronoUnit.SECONDS ).toMillis() ) );
     pageContext.setAttribute( "poolEvaluatorSuccessiveHits", JiveGlobals.getIntProperty( "threaddump.evaluator.threadpools.successive-hits", 2 ) );
     pageContext.setAttribute( "poolEvaluatorBusyPercentage", JiveGlobals.getIntProperty( "threaddump.evaluator.threadpools.busy-percentage", 90 ) );
+
     pageContext.setAttribute( "deadlockEvaluatorInterval", JiveGlobals.getLongProperty( "threaddump.evaluator.deadlock.interval", Duration.of( 5, ChronoUnit.MINUTES ).toMillis() ) );
+
+    pageContext.setAttribute( "taskEngineEvaluatorMaxThreads", JiveGlobals.getIntProperty( "threaddump.evaluator.taskengine.max-threads", 300 ) );
+    pageContext.setAttribute( "taskEngineEvaluatorMaxPoolSize", JiveGlobals.getIntProperty( "threaddump.evaluator.taskengine.max-poolsize", 500 ) );
+    pageContext.setAttribute( "taskEngineEvaluatorInterval", JiveGlobals.getLongProperty( "threaddump.evaluator.taskengine.interval", Duration.of( 5, ChronoUnit.SECONDS ).toMillis() ) );
+    pageContext.setAttribute( "taskEngineEvaluatorSuccessiveHits", JiveGlobals.getIntProperty( "threaddump.evaluator.taskengine.successive-hits", 2 ) );
 
 %>
 <html>
@@ -227,6 +250,20 @@
                         </p>
                         <p><label for="deadlockEvaluatorIntervalMS"><fmt:message key="threaddump.page.task.deadlock.interval" /></label><br/>
                             <input type="number" min="0" id="deadlockEvaluatorIntervalMS" name="deadlockEvaluatorIntervalMS" size="45" maxlength="30" value="${deadlockEvaluatorInterval}"> <fmt:message key="global.milliseconds"/></p>
+
+                        <br/>
+                        <p><b><fmt:message key="threaddump.page.task.taskengine.title"/></b></p>
+                        <p><input type="checkbox" name="taskEngineEvaluatorEnabled" id="taskEngineEvaluatorEnabled" ${isTaskEngineEvaluatorEnabled ? "checked" : ""} onClick="toggleReadOnly();">
+                            <label for="taskEngineEvaluatorEnabled"><fmt:message key="threaddump.page.task.taskengine.enabled"/></label>
+                        </p>
+                        <p><label for="taskEngineEvaluatorMaxThreads"><fmt:message key="threaddump.page.task.taskengine.max-threads" /></label><br/>
+                            <input type="number" min="0" id="taskEngineEvaluatorMaxThreads" name="taskEngineEvaluatorMaxThreads" size="45" maxlength="30" value="${taskEngineEvaluatorMaxThreads}"></p>
+                        <p><label for="taskEngineEvaluatorMaxPoolSize"><fmt:message key="threaddump.page.task.taskengine.max-poolsize" /></label><br/>
+                            <input type="number" min="0" id="taskEngineEvaluatorMaxPoolSize" name="taskEngineEvaluatorMaxPoolSize" size="45" maxlength="30" value="${taskEngineEvaluatorMaxPoolSize}"></p>
+                        <p><label for="taskEngineEvaluatorIntervalMS"><fmt:message key="threaddump.page.task.taskengine.interval" /></label><br/>
+                            <input type="number" min="0" id="taskEngineEvaluatorIntervalMS" name="taskEngineEvaluatorIntervalMS" size="45" maxlength="30" value="${taskEngineEvaluatorInterval}"> <fmt:message key="global.milliseconds"/></p>
+                        <p><label for="taskEngineEvaluatorSuccessiveHits"><fmt:message key="threaddump.page.task.taskengine.successive-hits" /></label><br/>
+                            <input type="number" min="1" id="taskEngineEvaluatorSuccessiveHits" name="taskEngineEvaluatorSuccessiveHits" size="45" maxlength="10" value="${taskEngineEvaluatorSuccessiveHits}"></p>
                     </div>
                 </td>
             </tr>

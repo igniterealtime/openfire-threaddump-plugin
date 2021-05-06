@@ -117,6 +117,16 @@ copy the new threaddump.jar file over the existing file.
         <tr><td><tt>threaddump.evaluator.deadlock.interval</tt></td><td>The frequence of deadlock detection evaluator.</td></tr>
     </table>
 </p>
+    </li><li>
+<p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.TaskEngineEvaluator</tt></p>
+<p>An evaluator that periodically checks the thread pool that is used by Openfire's internal Task Engine.
+    <table>
+        <tr><td><tt>threaddump.evaluator.taskengine.interval</tt></td><td>The frequency (in milliseconds) of task engine thread pool evaluation.</td></tr>
+        <tr><td><tt>threaddump.evaluator.taskengine.successive-hits</tt></td><td>How many successive evaluations must have detected excessive thread pool usage, for a thread dump to be created.</td></tr>
+        <tr><td><tt>threaddump.evaluator.taskengine.max-threads</tt></td><td>The minimum amount of active threads in the pool to trigger a thread dump.</td></tr>
+        <tr><td><tt>threaddump.evaluator.taskengine.max-poolsize</tt></td><td>The minimum size of the thread pool (including active and inactive threads) to trigger a thread dump.</td></tr>
+    </table>
+</p>
     </li>
 </ul>
 <h2>Attribution</h2>

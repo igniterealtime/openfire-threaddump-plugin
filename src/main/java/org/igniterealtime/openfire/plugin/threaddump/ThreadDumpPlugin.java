@@ -18,6 +18,7 @@ package org.igniterealtime.openfire.plugin.threaddump;
 import org.igniterealtime.openfire.plugin.threaddump.evaluator.CoreThreadPoolsEvaluator;
 import org.igniterealtime.openfire.plugin.threaddump.evaluator.DeadlockEvaluator;
 import org.igniterealtime.openfire.plugin.threaddump.evaluator.Evaluator;
+import org.igniterealtime.openfire.plugin.threaddump.evaluator.TaskEngineEvaluator;
 import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.util.JiveGlobals;
@@ -169,7 +170,7 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
     public Set<Class<? extends Evaluator>> getTaskEvaluatorClasses()
     {
         final Set<Class<? extends Evaluator>> result = new HashSet<>();
-        final String evaluatorNames = JiveGlobals.getProperty( "threaddump.task.evaluators", CoreThreadPoolsEvaluator.class.getCanonicalName() + ", " + DeadlockEvaluator.class.getCanonicalName() );
+        final String evaluatorNames = JiveGlobals.getProperty( "threaddump.task.evaluators", CoreThreadPoolsEvaluator.class.getCanonicalName() + ", " + DeadlockEvaluator.class.getCanonicalName() + ", " + TaskEngineEvaluator.class.getCanonicalName() );
         if ( evaluatorNames != null ) {
             for ( final String evaluatorName : evaluatorNames.split( "\\s*,\\s*" ) )
             {
