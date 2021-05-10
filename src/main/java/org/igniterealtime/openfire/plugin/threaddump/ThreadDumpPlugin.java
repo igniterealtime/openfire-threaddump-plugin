@@ -24,7 +24,6 @@ import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.util.JiveGlobals;
 import org.jivesoftware.util.PropertyEventDispatcher;
 import org.jivesoftware.util.PropertyEventListener;
-import org.jivesoftware.util.TaskEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +34,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ThreadDumpPlugin implements Plugin, PropertyEventListener
 {
     private static final Logger Log = LoggerFactory.getLogger( ThreadDumpPlugin.class );
 
+    private static final AtomicInteger nextTimerSerial = new AtomicInteger(1);
+
+    private Timer timer;
     private DumpCheckTimerTask task;
 
     @Override
@@ -54,20 +58,21 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
     public void destroyPlugin()
     {
         PropertyEventDispatcher.removeListener( this );
-        if ( task != null )
+        if ( timer != null )
         {
-            TaskEngine.getInstance().cancelScheduledTask( task );
-            task = null;
+            timer.cancel();
         }
+
+        task = null;
     }
 
     public synchronized void configMonitor()
     {
-        if ( task != null )
-        {
-            TaskEngine.getInstance().cancelScheduledTask( task );
-            task = null;
+        if (timer != null) {
+            timer.cancel();
         }
+        timer = new Timer( "ThreadDump-Timer-" + nextTimerSerial.getAndIncrement() );
+        task = null;
 
         if ( isTaskEnabled() )
         {
@@ -95,8 +100,11 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
                 Log.info( "Scheduling a check for thread dump necessity evaluation every {}ms (starting after a delay of {}ms. No more than one dump per {} will be generated.", new Object[] {intervalMS, delayMS, backoff} );
                 evaluators.forEach( evaluator -> Log.info( "Enabled evaluator {}, running every {}", evaluator.getClass().getCanonicalName(), evaluator.getInterval() ) );
                 task = new DumpCheckTimerTask( backoff );
-                evaluators.forEach( evaluator -> task.add( evaluator ) );
-                TaskEngine.getInstance().schedule( task, delayMS, intervalMS );
+                evaluators.forEach(task::add);
+
+                // Do not use TaskEngine to schedule these tasks, as the state of the thread pool of TaskEngine is itself
+                // a potential trigger for thread dumps to be created! See https://github.com/igniterealtime/openfire-threaddump-plugin/pull/7#issuecomment-836498101
+                timer.schedule( task, delayMS, intervalMS );
             }
         }
     }

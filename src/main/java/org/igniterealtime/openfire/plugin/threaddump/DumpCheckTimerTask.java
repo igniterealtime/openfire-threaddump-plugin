@@ -15,23 +15,18 @@
  */
 package org.igniterealtime.openfire.plugin.threaddump;
 
-import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
-import org.apache.mina.filter.executor.ExecutorFilter;
-import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.igniterealtime.openfire.plugin.threaddump.evaluator.Evaluator;
 import org.igniterealtime.openfire.plugin.threaddump.formatter.DefaultThreadDumpFormatter;
-import org.jivesoftware.openfire.XMPPServer;
-import org.jivesoftware.openfire.spi.ConnectionListener;
-import org.jivesoftware.openfire.spi.ConnectionManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 /**
