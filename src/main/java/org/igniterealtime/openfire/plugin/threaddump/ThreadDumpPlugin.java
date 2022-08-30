@@ -15,10 +15,7 @@
  */
 package org.igniterealtime.openfire.plugin.threaddump;
 
-import org.igniterealtime.openfire.plugin.threaddump.evaluator.CoreThreadPoolsEvaluator;
-import org.igniterealtime.openfire.plugin.threaddump.evaluator.DeadlockEvaluator;
-import org.igniterealtime.openfire.plugin.threaddump.evaluator.Evaluator;
-import org.igniterealtime.openfire.plugin.threaddump.evaluator.TaskEngineEvaluator;
+import org.igniterealtime.openfire.plugin.threaddump.evaluator.*;
 import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.util.JiveGlobals;
@@ -86,7 +83,11 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
                 try
                 {
                     final Evaluator evaluator = evaluatorClass.newInstance();
-                    evaluators.add( evaluator );
+                    if (evaluator.isSupported()) {
+                        evaluators.add(evaluator);
+                    } else {
+                        Log.info( "Not loading evaluator {} as its functionality is not supported by the configuration of this Openfire server.", evaluator.getClass().getSimpleName() );
+                    }
                 }
                 catch ( Exception e )
                 {
@@ -178,7 +179,7 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
     public Set<Class<? extends Evaluator>> getTaskEvaluatorClasses()
     {
         final Set<Class<? extends Evaluator>> result = new HashSet<>();
-        final String evaluatorNames = JiveGlobals.getProperty( "threaddump.task.evaluators", CoreThreadPoolsEvaluator.class.getCanonicalName() + ", " + DeadlockEvaluator.class.getCanonicalName() + ", " + TaskEngineEvaluator.class.getCanonicalName() );
+        final String evaluatorNames = JiveGlobals.getProperty( "threaddump.task.evaluators", CoreThreadPoolsEvaluator.class.getCanonicalName() + ", " + DeadlockEvaluator.class.getCanonicalName() + ", " + TaskEngineEvaluator.class.getCanonicalName() + ", " + DatabaseConnectionPoolEvaluator.class.getCanonicalName());
         if ( evaluatorNames != null ) {
             for ( final String evaluatorName : evaluatorNames.split( "\\s*,\\s*" ) )
             {

@@ -56,7 +56,7 @@ public class CoreThreadPoolsEvaluator implements Evaluator
 
     protected boolean checkPools()
     {
-        final int busyPercentageLimit = JiveGlobals.getIntProperty( "threaddump.evaluator.threadpools.busy-percentage", 90 );
+        final int busyPercentageLimit = JiveGlobals.getIntProperty( "threaddump.evaluator.threadpools.busy-percentage-max", 90 );
         final Set<ConnectionListener> listeners = ((ConnectionManagerImpl) XMPPServer.getInstance().getConnectionManager()).getListeners();
         for ( ConnectionListener listener : listeners )
         {

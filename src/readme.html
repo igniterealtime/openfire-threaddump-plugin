@@ -111,6 +111,15 @@ copy the new threaddump.jar file over the existing file.
     </table>
 </p>
     </li><li>
+    <p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.DatabaseConnectionPoolEvaluator</tt></p>
+    <p>An evaluator that periodically checks the amount of active database connections in the pool that manages the total amount of available connections. This evaluator is only available when using the standard database connection provider. It does not support the embedded database.
+    <table>
+        <tr><td><tt>threaddump.evaluator.dbpool.interval</tt></td><td>The frequency (in milliseconds) of database connection pool evaluation.</td></tr>
+        <tr><td><tt>threaddump.evaluator.dbpool.busy-percentage-max</tt></td><td>The percentage of connections in the pool that can be running at the same time that is considered 'busy'.</td></tr>
+        <tr><td><tt>threaddump.evaluator.dbpool.successive-hits</tt></td><td>How many successive evaluations must have detected excessive connection pool usage, for a thread dump to be created.</td></tr>
+    </table>
+</p>
+</li><li>
 <p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.DeadlockEvaluator</tt></p>
 <p>An evaluator that periodically checks if a thread deadlock has occurred.
     <table>
