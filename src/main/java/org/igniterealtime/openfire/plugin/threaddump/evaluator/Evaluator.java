@@ -6,4 +6,7 @@ public interface Evaluator
 {
     Duration getInterval();
     boolean shouldCreateThreadDump();
+    default boolean isSupported() {
+        return true;
+    }
 }
