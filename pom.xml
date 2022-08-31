@@ -12,7 +12,7 @@
 
     <groupId>org.igniterealtime.openfire.plugins</groupId>
     <artifactId>threaddump</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>Threaddump Plugin</name>
     <description>A plugin that can be used to generate diagnostics.</description>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
