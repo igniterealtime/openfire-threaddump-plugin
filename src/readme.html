@@ -102,15 +102,16 @@ copy the new threaddump.jar file over the existing file.
 <p>The following evaluator classes are available:</p>
 <ul>
     <li>
-<p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.CoreThreadPoolsEvaluator</tt></p>
-<p>An evaluator that periodically checks the activity in the thread pools that power most network-related activity.
-    <table>
-        <tr><td><tt>threaddump.evaluator.threadpools.interval</tt></td><td>The frequency (in milliseconds) of core network thread pool evaluation.</td></tr>
-        <tr><td><tt>threaddump.evaluator.threadpools.busy-percentage-max</tt></td><td>The percentage of threads in a pool that can be running at the same time that is considered 'busy'.</td></tr>
-        <tr><td><tt>threaddump.evaluator.threadpools.successive-hits</tt></td><td>How many successive evaluations must have detected excessive thread pool usage, for a thread dump to be created.</td></tr>
-    </table>
-</p>
-    </li><li>
+<!-- FIXME: Re-enable when CoreThreadPoolsEvaluator is fixed. See https://github.com/igniterealtime/openfire-threaddump-plugin/issues/16 -->
+<!--<p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.CoreThreadPoolsEvaluator</tt></p>-->
+<!--<p>An evaluator that periodically checks the activity in the thread pools that power most network-related activity.-->
+<!--    <table>-->
+<!--        <tr><td><tt>threaddump.evaluator.threadpools.interval</tt></td><td>The frequency (in milliseconds) of core network thread pool evaluation.</td></tr>-->
+<!--        <tr><td><tt>threaddump.evaluator.threadpools.busy-percentage-max</tt></td><td>The percentage of threads in a pool that can be running at the same time that is considered 'busy'.</td></tr>-->
+<!--        <tr><td><tt>threaddump.evaluator.threadpools.successive-hits</tt></td><td>How many successive evaluations must have detected excessive thread pool usage, for a thread dump to be created.</td></tr>-->
+<!--    </table>-->
+<!--</p>-->
+<!--    </li><li>-->
     <p><tt style="color: black">org.igniterealtime.openfire.plugin.threaddump.evaluator.DatabaseConnectionPoolEvaluator</tt></p>
     <p>An evaluator that periodically checks the amount of active database connections in the pool that manages the total amount of available connections. This evaluator is only available when using the standard database connection provider. It does not support the embedded database.
     <table>

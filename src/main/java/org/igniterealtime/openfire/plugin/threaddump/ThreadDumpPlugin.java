@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Ignite Realtime Foundation. All rights reserved.
+ * Copyright (C) 2019-2024 Ignite Realtime Foundation. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
             {
                 try
                 {
-                    final Evaluator evaluator = evaluatorClass.newInstance();
+                    final Evaluator evaluator = evaluatorClass.getDeclaredConstructor().newInstance();
                     if (evaluator.isSupported()) {
                         evaluators.add(evaluator);
                     } else {
@@ -98,7 +98,7 @@ public class ThreadDumpPlugin implements Plugin, PropertyEventListener
             if ( !evaluators.isEmpty() )
             {
                 final Duration backoff = Duration.of( backoffMS, ChronoUnit.MILLIS );
-                Log.info( "Scheduling a check for thread dump necessity evaluation every {}ms (starting after a delay of {}ms. No more than one dump per {} will be generated.", new Object[] {intervalMS, delayMS, backoff} );
+                Log.info( "Scheduling a check for thread dump necessity evaluation every {}ms (starting after a delay of {}ms. No more than one dump per {} will be generated.", intervalMS, delayMS, backoff);
                 evaluators.forEach( evaluator -> Log.info( "Enabled evaluator {}, running every {}", evaluator.getClass().getCanonicalName(), evaluator.getInterval() ) );
                 task = new DumpCheckTimerTask( backoff );
                 evaluators.forEach(task::add);

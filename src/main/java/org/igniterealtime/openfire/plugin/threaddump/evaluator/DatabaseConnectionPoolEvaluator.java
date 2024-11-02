@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Ignite Realtime Foundation. All rights reserved.
+ * Copyright (C) 2022-2024 Ignite Realtime Foundation. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,12 @@ package org.igniterealtime.openfire.plugin.threaddump.evaluator;
 import org.jivesoftware.database.ConnectionProvider;
 import org.jivesoftware.database.DbConnectionManager;
 import org.jivesoftware.database.DefaultConnectionProvider;
-import org.jivesoftware.database.EmbeddedConnectionProvider;
 import org.jivesoftware.util.JiveGlobals;
-import org.jivesoftware.util.TaskEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class DatabaseConnectionPoolEvaluator implements Evaluator
 {
@@ -78,7 +74,7 @@ public class DatabaseConnectionPoolEvaluator implements Evaluator
             final int activeConnections = defaultConnectionProvider.getActiveConnections();
             final int maxConnections = defaultConnectionProvider.getMaxConnections();
             final int busyPercentage = 100 * activeConnections / maxConnections;
-            Log.trace( "{}% ({}/{}) connections of database pool are currently active. Threshold: {}%", new Object[] { busyPercentage, activeConnections, maxConnections, busyPercentageLimit });
+            Log.trace( "{}% ({}/{}) connections of database pool are currently active. Threshold: {}%", busyPercentage, activeConnections, maxConnections, busyPercentageLimit);
             return busyPercentage > busyPercentageLimit;
         } else {
             Log.debug("This server is using {} as the database connection provider for Openfire, which is not supported by this evaluator.", connectionProvider.getClass().getSimpleName());

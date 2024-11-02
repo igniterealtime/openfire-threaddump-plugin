@@ -123,8 +123,11 @@
     pageContext.setAttribute( "dump",  new DefaultThreadDumpFormatter().format( dump ) );
 
     pageContext.setAttribute( "plugin", plugin );
-    pageContext.setAttribute( "isPoolEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( CoreThreadPoolsEvaluator.class ) );
-    pageContext.setAttribute( "isPoolEvaluatorSupported", new CoreThreadPoolsEvaluator().isSupported() );
+//    pageContext.setAttribute( "isPoolEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( CoreThreadPoolsEvaluator.class ) );
+//    pageContext.setAttribute( "isPoolEvaluatorSupported", new CoreThreadPoolsEvaluator().isSupported() );
+    pageContext.setAttribute( "isPoolEvaluatorEnabled", false ); // FIXME re-enable when issue #12 is fixed.
+    pageContext.setAttribute( "isPoolEvaluatorSupported", false ); // FIXME re-enable when issue #12 is fixed.
+
     pageContext.setAttribute( "isDBPoolEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( DatabaseConnectionPoolEvaluator.class ) );
     pageContext.setAttribute( "isDBPoolEvaluatorSupported", new DatabaseConnectionPoolEvaluator().isSupported() );
     pageContext.setAttribute( "isDeadlockEvaluatorEnabled", plugin.getTaskEvaluatorClasses().contains( DeadlockEvaluator.class ) );
