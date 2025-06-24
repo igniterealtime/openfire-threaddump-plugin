@@ -34,7 +34,7 @@
 <jsp:useBean id="webManager" class="org.jivesoftware.util.WebManager"  />
 <% webManager.init(request, response, session, application, out ); %>
 <%
-    final ThreadDumpPlugin plugin = (ThreadDumpPlugin) XMPPServer.getInstance().getPluginManager().getPlugin( "threaddump" );
+    final ThreadDumpPlugin plugin = (ThreadDumpPlugin) XMPPServer.getInstance().getPluginManager().getPluginByName( "Thread Dump" ).orElseThrow();
     String success = request.getParameter("success");
     boolean update = request.getParameter("update") != null;
 
