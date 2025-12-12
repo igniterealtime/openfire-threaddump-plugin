@@ -27,7 +27,7 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jspc-maven-plugin</artifactId>
                 <!-- Override the JSP compiler version to retain compatibility with Openfire prior to 4.3.0 -->
-                <version>9.2.14.v20151106</version>
+                <version>11.0.26</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.igniterealtime.openfire</groupId>
